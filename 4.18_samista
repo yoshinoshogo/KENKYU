@@ -1,0 +1,24 @@
+// PTCサーミスタの温度計算に使用する定数
+const float R0 = 10000;  // 基準温度時のサーミスタの抵抗（例: 25°C時）
+const float alpha = 0.02; // 温度係数（例: 0.02/°C）
+const int analogPin = A0;  // サーミスタの接続されているアナログピン
+
+void setup() {
+  Serial.begin(9600);  // シリアルモニタの開始
+}
+
+void loop() {
+  int analogValue = analogRead(analogPin);  // アナログピンから値を読み取る
+  float voltage = analogValue * (5.0 / 1023.0);  // アナログ値を電圧に変換
+  float resistance = (5.0 - voltage) * 10000.0 / voltage;  // 分圧回路から抵抗値を計算
+  
+  // PTCサーミスタの抵抗値から温度（°C）を計算
+  float temperature = (resistance / R0 - 1) / alpha;  // 線形近似式を使用して温度計算
+  
+  temperature = temperature + 70;
+  Serial.print("temperature :");
+  Serial.print(temperature);  // 温度をシリアルモニタに表示
+  Serial.println(" °C");
+  
+  delay(1000);  // 1秒待機
+}
