@@ -1,0 +1,23 @@
+#include <Wire.h>
+#include <Adafruit_AHTX0.h>
+
+Adafruit_AHTX0 aht;
+
+void setup() {
+  Serial.begin(9600);
+  while (!Serial);  
+  if (!aht.begin()) {
+    Serial.println("AHTX0 初期化失敗 → 配線かセンサ故障の可能性");
+    while (1);
+  }
+  Serial.println("AHTX0 初期化成功");
+}
+
+void loop() {
+  sensors_event_t humidity, temp;
+  aht.getEvent(&humidity, &temp);
+  Serial.print("温度: "); Serial.print(temp.temperature, 2); Serial.print(" ℃    ");
+  
+  Serial.print("湿度: "); Serial.print(humidity.relative_humidity, 2); Serial.println(" %");
+  delay(2000);
+}
